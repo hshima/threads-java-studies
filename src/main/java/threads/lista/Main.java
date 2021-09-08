@@ -15,7 +15,7 @@ public class Main {
 //		List<String> list = Collections.synchronizedList(new ArrayList<String>());
 		List<String> list = new Vector<>();
 		
-		for(int i =0; i < 100; i++) {
+		for(int i =0; i < 10; i++) {
 			new Thread(new AddElementRunner(list, i)).start();;
 		}
 		Thread.sleep(2000);
