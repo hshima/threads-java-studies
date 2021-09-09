@@ -6,8 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Banheiro {
 
 	private Lock lock = new ReentrantLock();
-	private boolean isDirty = true;
-
+	private volatile boolean isDirty = true;
 
 	private void waitOutSide() {
 		System.out.println("Yuck!! Sujo!");
@@ -17,7 +16,7 @@ public class Banheiro {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void n1() {
 
 		String nome = Thread.currentThread().getName();
@@ -26,59 +25,60 @@ public class Banheiro {
 		synchronized (this) {
 //		lock.lock();
 
-			if (isDirty) {
+			while (isDirty) {
 				waitOutSide();
 			}
-		System.out.println(nome + " entra no banheiro");
+			System.out.println(nome + " entra no banheiro");
 
-		System.out.println(nome + " faz coisa rápida");
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		wrapUp(nome);
+			System.out.println(nome + " faz coisa rápida");
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			wrapUp(nome);
 //		lock.unlock();
 		}
 
 		saida(nome);
+		isDirty = true;
 	}
 
 	public void n2() {
 
 		String nome = Thread.currentThread().getName();
 
-		
 		System.out.println(nome + " bate na porta");
 		synchronized (this) {
 //		lock.lock();
-		
-		if(isDirty) {
-			waitOutSide();
-		}
-		System.out.println(nome + " entra no banheiro");
-		System.out.println(nome + " faz coisa demorada");
-		try {
-			Thread.sleep(20000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		wrapUp(nome);
+
+			while (isDirty) {
+				waitOutSide();
+			}
+			System.out.println(nome + " entra no banheiro");
+			System.out.println(nome + " faz coisa demorada");
+			try {
+				Thread.sleep(20000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			wrapUp(nome);
 //		lock.unlock();
 		}
 
 		saida(nome);
+		isDirty = true;
 	}
-	
+
 	public void limpar() {
 		String nome = Thread.currentThread().getName();
 		System.out.println(nome + " bate na porta");
-		
-		if(!isDirty) {
+
+		if (!isDirty) {
 			System.out.println(nome + " não precisa limpar");
 			return;
 		}
-		
+
 		synchronized (this) {
 			System.out.println(nome + " entrando no banheito");
 			System.out.println(nome + " limpando o banheiro");
@@ -87,12 +87,11 @@ public class Banheiro {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println(nome + " saindo do banheiro");
-//			this.notifyAll();
+			saida(nome);
 			this.notifyAll();
 		}
-		
-		this.isDirty = false;
+
+		isDirty = false;
 	}
 
 	private void wrapUp(String nome) {

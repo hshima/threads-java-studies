@@ -16,6 +16,8 @@ public class UsandoBanheiro {
 		Thread c1 = new Thread(new TarefaN1(banheiro1), "Joao");
 		Thread c2 = new Thread(new TarefaN2(banheiro1), "Maria");
 		Thread l1 = new Thread(new Limpeza(banheiro1), "Ana");
+		l1.setPriority(10);
+		l1.setDaemon(true);
 
 		// usando banheiros diferentes
 //		Thread c1 = new Thread(new TarefaN1(banheiro1), "Joao");
