@@ -1,6 +1,7 @@
 package threads.banheiro;
 
 import threads.banheiro.model.Banheiro;
+import threads.banheiro.model.Limpeza;
 import threads.banheiro.model.TarefaN1;
 import threads.banheiro.model.TarefaN2;
 
@@ -14,6 +15,7 @@ public class UsandoBanheiro {
 		// Usando o mesmo banheiro
 		Thread c1 = new Thread(new TarefaN1(banheiro1), "Joao");
 		Thread c2 = new Thread(new TarefaN2(banheiro1), "Maria");
+		Thread l1 = new Thread(new Limpeza(banheiro1), "Ana");
 
 		// usando banheiros diferentes
 //		Thread c1 = new Thread(new TarefaN1(banheiro1), "Joao");
@@ -21,6 +23,7 @@ public class UsandoBanheiro {
 		
 		c1.start();
 		c2.start();
+		l1.start();
 	}
 
 }
